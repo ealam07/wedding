@@ -484,58 +484,21 @@
                             </div>
                             <h2>Are You Attending?</h2>
                         </div>
-                        <form method="post" class="contact-validation-active" id="contact-form-main">
+                        <form id="contact-form-main" class="contact-validation-active">
                             <div>
-                                <input type="text" class="form-control" name="name" id="name" placeholder="Enter Your Name">
-                            </div>
-                            <!-- <div>
-                                <input type="email" class="form-control" name="email" id="email" placeholder="Email">
-                            </div>
-                            <div class="radio-buttons">
-                                <p>
-                                    <input type="radio" id="attend" name="radio-group" checked>
-                                    <label for="attend">Yes, I will be there</label>
-                                </p>
-                                <p>
-                                    <input type="radio" id="not" name="radio-group">
-                                    <label for="not">Sorry, I can’t come</label>
-                                </p>
+                                <input type="text" class="form-control" name="name" id="name" placeholder="Enter Your Name" required>
                             </div>
                             <div>
-                                <select name="guest" class="form-control">
-                                    <option disabled="disabled" selected>Number Of Guests</option>
-                                    <option>01</option>
-                                    <option>02</option>
-                                    <option>03</option>
-                                    <option>04</option>
-                                    <option>05</option>
-                                </select>
-                            </div> -->
-                            <div>
-                                <input type="text" class="form-control" name="message" id="message" placeholder="Write A Sweat Message">
+                                <input type="text" class="form-control" name="message" id="message" placeholder="Write A Sweet Message" required>
                             </div>
-                            <!-- <div>
-                                <select name="meal" class="form-control last">
-                                    <option disabled="disabled" selected>Meal Preferences</option>
-                                    <option>Chicken Soup</option>
-                                    <option>Motton Kabab</option>
-                                    <option>Chicken BBQ</option>
-                                    <option>Mix Salad</option>
-                                    <option>Beef Ribs </option>
-                                </select>
-                            </div> -->
                             <div class="submit-area">
-                                <button type="submit" class="theme-btn-s3">In Shaa Allah</button>
-                                <div id="c-loader">
-                                    <i class="ti-reload"></i>
-                                </div>
+                                <button type="submit" id="submit-btn" class="theme-btn-s3">In Sha Allah</button>
                             </div>
-                            <div class="clearfix error-handling-messages">
-                                <div id="success">Thank you</div>
-                                <div id="error"> Error occurred while sending email. Please try again later.
-                                </div>
+                            <div class="error-handling-messages">
+                                <div id="success" style="display:none;">Thank you! Your message has been submitted.</div>
                             </div>
                         </form>
+                    
                         <div class="border-style"></div>
                     </div>
                     <div class="vector-1">
@@ -794,7 +757,7 @@
                                 </div>
                                 <div class="grid">
                                     <div class="img-holder">
-                                        <a href="assets/images/portfolio/66.s3jpg" class="fancybox" data-fancybox-group="gall-1">
+                                        <a href="assets/images/portfolio/66.jpg" class="fancybox" data-fancybox-group="gall-1">
                                             <img src="assets/images/portfolio/66.jpg" alt class="img img-responsive">
                                             <div class="hover-content">
                                                 <i class="ti-plus"></i>
@@ -1084,6 +1047,69 @@
           });
         });
     </script>
+
+<script>
+    document.getElementById('contact-form-main').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Hide success message if it's visible
+        document.getElementById('success').style.display = 'none';
+        
+        // Change button text to "Submitting..."
+        var submitBtn = document.getElementById('submit-btn');
+        submitBtn.textContent = 'Submitting...';
+        submitBtn.disabled = true;
+        
+        // Get form values
+        var name = document.getElementById('name').value;
+        var message = document.getElementById('message').value;
+        
+        // Web App URL
+        var webAppURL = 'https://script.google.com/macros/s/AKfycbz2NeUT17ypzdwySRZeP26RVmvcHTD7i_LKtcgYBUmH3UOzan6WZ-C5OSRTrE80yOPGMw/exec';
+        
+        // Create unique callback function name
+        var callbackName = 'googleScriptCallback_' + Date.now();
+        
+        // Create script element for JSONP
+        var script = document.createElement('script');
+        script.src = webAppURL + 
+                     '?name=' + encodeURIComponent(name) + 
+                     '&message=' + encodeURIComponent(message) +
+                     '&callback=' + callbackName;
+        
+        // Define the callback function
+        window[callbackName] = function(response) {
+            // Clean up
+            delete window[callbackName];
+            document.body.removeChild(script);
+            
+            // Reset button to original state
+            submitBtn.textContent = 'In Sha Allah';
+            submitBtn.disabled = false;
+            
+            // Show success message and clear form
+            document.getElementById('success').style.display = 'block';
+            document.getElementById('name').value = '';
+            document.getElementById('message').value = '';
+            
+            // Hide success message after 2 seconds
+            setTimeout(function() {
+                document.getElementById('success').style.display = 'none';
+            }, 2000);
+        };
+        
+        // Add the script to the page
+        document.body.appendChild(script);
+    });
+    
+    // Hide success message when page loads
+    window.onload = function() {
+        document.getElementById('success').style.display = 'none';
+    };
+</script>
+
+    
+    
 </body>
 
 </html>
